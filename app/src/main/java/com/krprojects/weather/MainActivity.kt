@@ -4,36 +4,46 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.Intent
 import android.content.pm.PackageManager
-import androidx.appcompat.app.AppCompatActivity
+import android.location.*
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.krprojects.weather.ApiInterface.Companion.appid
 import com.krprojects.weather.ApiInterface.Companion.q
 import com.krprojects.weather.ApiInterface.Companion.units
+import io.nlopez.smartlocation.OnLocationUpdatedListener
+import io.nlopez.smartlocation.SmartLocation
 import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.security.Permissions
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity()  {
+    lateinit var mLocManager:LocationManager
+    lateinit var mLocListener:LocationListener
+    val arrLoc = ArrayList<LocationModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+
         if (checkPer())
         {
             Toast.makeText(this@MainActivity, "Permission Granted", Toast.LENGTH_SHORT).show()
+
             this.doYourWork()
+
 
         }
         else{
             reqPer(arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION),200)
+
         }
        /* fun doYourWork(){
             ApiInterface.create().getCurrentCityWeatherInfo(q, appid, units)
@@ -130,6 +140,11 @@ class MainActivity : AppCompatActivity() {
 
 
     }
+
+
+
+
+
     fun checkPer():Boolean
     {
         val checkLoc = ContextCompat.checkSelfPermission(this, ACCESS_FINE_LOCATION)
@@ -158,17 +173,29 @@ class MainActivity : AppCompatActivity() {
                 }
                 else{
                     Toast.makeText(this, "Permission Not Granted", Toast.LENGTH_SHORT).show()
+                    startActivity(Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS))
                     pbar.visibility=View.GONE
                 }
             }
         }
     }
+
+
 }
 
 private fun MainActivity.doYourWork() {
     val myDb = MyDBHelper(this)
     val arrForecast = ArrayList<forecast_row_model>()
     var fragval = 0
+/*if(SmartLocation.with(applicationContext).location().state().locationServicesEnabled()
+    && SmartLocation.with(applicationContext).location().state().isAnyProviderAvailable()
+    && SmartLocation.with(applicationContext).location().state().isGpsAvailable()
+    && SmartLocation.with(applicationContext).location().state().isNetworkAvailable())
+{
+    SmartLocation.with(this).location().continuous().start(OnLocationUpdatedListener {
+        Log.d("MyLocation", "lat: " + it.getLatitude() + ", lng: " + it.getLongitude())
+    })
+}*/
     ApiInterface.create().getCurrentCityWeatherInfo(q, appid, units)
         .enqueue(object : Callback<WeatherModel> {
             override fun onResponse(
