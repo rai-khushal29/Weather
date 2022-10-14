@@ -134,9 +134,9 @@ class MainActivity : AppCompatActivity()  {
         }*/
 
 
-        btn_select_city.setOnClickListener {
-            startActivity(Intent(this, select_city::class.java))
-        }
+//        btn_select_city.setOnClickListener {
+//            startActivity(Intent(this, select_city::class.java))
+//        }
 
 
     }
@@ -281,4 +281,7 @@ private fun MainActivity.doYourWork() {
             }
 
         })
+    btn_select_city.setOnClickListener {
+        startActivity(Intent(applicationContext,select_city::class.java))
+    }
 }

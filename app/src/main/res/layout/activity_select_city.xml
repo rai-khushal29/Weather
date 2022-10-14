@@ -12,6 +12,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
+
     android:theme="@style/Theme.Material3.DynamicColors.Light"
     tools:ignore="MissingConstraints">
     <ImageView
@@ -24,6 +25,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Select City"
+        android:textAlignment="center"
         android:textSize="30sp"/>
 </com.google.android.material.appbar.AppBarLayout>
 
